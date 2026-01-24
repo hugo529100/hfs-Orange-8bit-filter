@@ -1,0 +1,701 @@
+/* 圖片顏色濾鏡 - 僅在有 data-orange-filter 屬性時生效 
+:root[data-orange-filter] img,
+:root[data-orange-filter] .file-show img,
+:root[data-orange-filter] .entry-icon img,
+:root[data-orange-filter] video poster {
+    filter: url(#orange8bit);
+    image-rendering: pixelated;
+} */
+
+/* 視頻濾鏡 
+:root[data-orange-filter] video {
+    filter: url(#orange8bit);
+    image-rendering: pixelated;
+}*/
+
+/* 圖片顏色濾鏡 - 僅在有 data-orange-filter 屬性時生效 */
+:root[data-orange-filter] img,
+:root[data-orange-filter] .file-show img,
+:root[data-orange-filter] .entry-icon img {
+    filter: url(#orange8bit);
+    image-rendering: pixelated;
+} 
+
+/* 像素感增強 */
+:root[data-orange-filter] .file-show img {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* 塊狀像素化效果增強 */
+:root[data-pixelation-effect] img,
+:root[data-pixelation-effect] .file-show img {
+    image-rendering: pixelated !important;
+    image-rendering: crisp-edges !important;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+/* 像素+45°網格效果增強 */
+:root[data-pixel-diag-grid-effect] img,
+:root[data-pixel-diag-grid-effect] .file-show img {
+    image-rendering: pixelated !important;
+    image-rendering: crisp-edges !important;
+    -ms-interpolation-mode: nearest-neighbor;
+}
+
+/* 根據顏色選擇調整整體色調 */
+:root[data-color-filter="yellow-green"] {
+    --filter-brightness: 1.00;
+}
+
+:root[data-color-filter="black-white"] {
+    --filter-brightness: 1.00;
+}
+
+:root[data-color-filter="orange"] {
+    --filter-brightness: 1.00;
+}
+
+/* 新增：藍綠配色模式 */
+:root[data-color-filter="blue-green"] {
+    --filter-brightness: 1.00;
+}
+
+/* 新增：純紅色配色模式 */
+:root[data-color-filter="pure-red"] {
+    --filter-brightness: 1.00;
+}
+
+/* ====== 原版CRT掃描線效果 ====== */
+:root[data-scanlines-effect]::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.12) 0px,
+            rgba(0, 0, 0, 0.12) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+    mix-blend-mode: multiply;
+    z-index: 2;
+}
+
+/* ====== 45°斜网格效果 - 單線條版本 ====== */
+:root[data-grid-effect]::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background:
+        linear-gradient(45deg, 
+            transparent 0%, 
+            transparent calc(50% - 0.5px), 
+            rgba(119, 119, 119, 0.46), 
+            transparent calc(50% + 0.5px), 
+            transparent 100%
+        ),
+        linear-gradient(-45deg, 
+            transparent 0%, 
+            transparent calc(50% - 0.5px), 
+            rgba(119, 119, 119, 0.46), 
+            transparent calc(50% + 0.5px), 
+            transparent 100%
+        );
+    background-size: 12px 12px, 12px 12px;
+    background-repeat: repeat;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    opacity: 0.9;
+}
+
+/* ====== 斜向45°點陣效果 - 修正版 ====== */
+:root[data-dotgrid-effect]::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    
+    --dot-color: rgba(0, 0, 0, 0.447);
+    --dot-size: 0.6px;
+    --spacing: 4px;
+    
+    /* 創建4個點在菱形的四個頂點，確保大小一致 */
+    background-image: 
+        /* 左上角點 */
+        radial-gradient(
+            circle at 0 0,
+            var(--dot-color) var(--dot-size),
+            transparent calc(var(--dot-size) + 0.2px)
+        ),
+        /* 右上角點 */
+        radial-gradient(
+            circle at calc(var(--spacing) * 2) 0,
+            var(--dot-color) var(--dot-size),
+            transparent calc(var(--dot-size) + 0.2px)
+        ),
+        /* 左下角點 */
+        radial-gradient(
+            circle at 0 calc(var(--spacing) * 2),
+            var(--dot-color) var(--dot-size),
+            transparent calc(var(--dot-size) + 0.2px)
+        ),
+        /* 右下角點 */
+        radial-gradient(
+            circle at calc(var(--spacing) * 2) calc(var(--spacing) * 2),
+            var(--dot-color) var(--dot-size),
+            transparent calc(var(--dot-size) + 0.2px)
+        ),
+        /* 中心點 - 單獨控制 */
+        radial-gradient(
+            circle at var(--spacing) var(--spacing),
+            var(--dot-color) var(--dot-size),
+            transparent calc(var(--dot-size) + 0.2px)
+        );
+    
+    background-size: 
+        calc(var(--spacing) * 2) calc(var(--spacing) * 2);
+    background-repeat: repeat;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    opacity: 0.6;
+}
+
+/* ====== 塊狀像素化效果 ====== */
+:root[data-pixelation-effect]::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background-image: 
+        linear-gradient(
+            rgba(119, 119, 119, 0.46) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(119, 119, 119, 0.46) 1px,
+            transparent 1px
+        );
+    background-size: 5px 5px;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    opacity: 0.5;
+}
+
+/* ====== 像素+45°網格效果 (橫向像素 + 純45°網格) ====== */
+:root[data-pixel-diag-grid-effect]::after {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    background-image: 
+        /* 45°斜線網格 */
+        linear-gradient(
+            45deg, 
+            transparent 0%, 
+            transparent calc(50% - 0.5px), 
+            rgba(119, 119, 119, 0.46) 50%, 
+            transparent calc(50% + 0.5px), 
+            transparent 100%
+        ),
+        linear-gradient(
+            -45deg, 
+            transparent 0%, 
+            transparent calc(50% - 0.5px), 
+            rgba(119, 119, 119, 0.46) 50%, 
+            transparent calc(50% + 0.5px), 
+            transparent 100%
+        );
+    background-size: 10px 10px;
+    background-repeat: repeat;
+    mix-blend-mode: multiply;
+    z-index: 2;
+    opacity: 0.;
+}
+
+/* 添加過渡效果 */
+:root[data-orange-filter] img {
+    transition: filter 1.8s ease;
+}
+
+/* 修正亮度對比度 */
+:root[data-orange-filter] .file-show img {
+    filter: url(#orange8bit) brightness(var(--filter-brightness, 1.00));
+}
+
+/* 效果模式濾鏡調整 */
+:root[data-scanlines-effect] img,
+:root[data-grid-effect] img,
+:root[data-dotgrid-effect] img {
+    filter: url(#orange8bit) brightness(calc(var(--filter-brightness, 1.00) * 1.00)) contrast(1.00);
+    transition: filter 0.5s ease;
+}
+
+/* 以下黑暗模式介入部分保持不變 */
+/* ====== 強行介入黑暗模式顏色設置 ====== */
+
+/* 橙色模式 - 黑暗主題介入 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark,
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark * {
+    --bg: rgba(8, 5, 0, 0.74);
+    --text: #ff9900;
+    --good-contrast: #ff9900be;
+    --button-bg-hover: #16141198;
+    --button-text: #ff9900;
+    --button-bg: #16141100;
+    color-scheme: dark;
+    --ghost-contrast: #ff99002b;
+    --faint-contrast: #ff99007b;
+    --mild-contrast: #ff99007d;
+    --comment-contrast: #ff99007a;
+    --grid-contrast: #ff990055;
+    --focus-color: #ff9900b8;
+    --text-high-contrast: #ff9900;
+    --success: #0b0a09ab;
+    --warning: #43270bab;
+    --link: #ff9900;
+    --deepprevew: #000000f6;
+}
+
+/* 黃綠色模式 - 黑暗主題介入 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark,
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark * {
+    --bg: rgba(10, 12, 0, 0.74);
+    --text: #b9ce00;
+    --good-contrast: #b9ce00be;
+    --button-bg-hover: #18191198;
+    --button-text: #b9ce00;
+    --button-bg: #18191100;
+    color-scheme: dark;
+    --ghost-contrast: #b9ce002b;
+    --faint-contrast: #b9ce007b;
+    --mild-contrast: #b9ce007d;
+    --comment-contrast: #b9ce007a;
+    --grid-contrast: #b9ce0055;
+    --focus-color: #b9ce00b8;
+    --text-high-contrast: #b9ce00;
+    --success: #0b0c09ab;
+    --warning: #43470bab;
+    --link: #b9ce00;
+    --deepprevew: #000000f6;
+}
+
+/* 新增：藍綠配色模式 - 黑暗主題介入 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark,
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark * {
+    --bg: rgba(0, 5, 8, 0.74);
+    --text: #00eabb;
+    --good-contrast: #00eabbbe;
+    --button-bg-hover: #11161898;
+    --button-text: #00eabb;
+    --button-bg: #11161800;
+    color-scheme: dark;
+    --ghost-contrast: #00eabb2b;
+    --faint-contrast: #00eabb7b;
+    --mild-contrast: #00eabb7d;
+    --comment-contrast: #00eabb7a;
+    --grid-contrast: #00eabb55;
+    --focus-color: #00eabbb8;
+    --text-high-contrast: #00eabb;
+    --success: #090b0cab;
+    --warning: #0a2b43ab;
+    --link: #00eabb;
+    --deepprevew: #000000f6;
+}
+
+/* 新增：純紅色配色模式 - 黑暗主題介入 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark,
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark * {
+    --bg: rgba(8, 0, 0, 0.74);
+    --text: #ff0000;
+    --good-contrast: #ff0000be;
+    --button-bg-hover: #16111198;
+    --button-text: #ff0000;
+    --button-bg: #16111100;
+    color-scheme: dark;
+    --ghost-contrast: #ff00002b;
+    --faint-contrast: #ff00007b;
+    --mild-contrast: #ff00007d;
+    --comment-contrast: #ff00007a;
+    --grid-contrast: #ff000055;
+    --focus-color: #ff0000b8;
+    --text-high-contrast: #ff0000;
+    --success: #0b0909ab;
+    --warning: #430a0aab;
+    --link: #ff0000;
+    --deepprevew: #000000f6;
+}
+
+/* 黑白色模式 - 黑暗主題介入 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark,
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark * {
+    --bg: rgba(0, 0, 0, 0.74);
+    --text: #ffffff;
+    --good-contrast: #ffffffbe;
+    --button-bg-hover: #2a2a2a98;
+    --button-text: #ffffff;
+    --button-bg: #2a2a2a00;
+    color-scheme: dark;
+    --ghost-contrast: #ffffff2b;
+    --faint-contrast: #ffffff7b;
+    --mild-contrast: #ffffff7d;
+    --comment-contrast: #ffffff7a;
+    --grid-contrast: #ffffff55;
+    --focus-color: #ffffffb8;
+    --text-high-contrast: #ffffff;
+    --success: #0a0a0aab;
+    --warning: #2a2a2aab;
+    --link: #ffffff;
+    --deepprevew: #000000f6;
+}
+
+/* ====== 對話框圖標容器顏色介入 ====== */
+
+/* 橙色模式 - 對話框圖標容器 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-icon {
+    color: var(--text) !important;
+    background-color: var(--button-bg) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黃綠色模式 - 對話框圖標容器 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-icon {
+    color: var(--text) !important;
+    background-color: var(--button-bg) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：藍綠配色模式 - 對話框圖標容器 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-icon {
+    color: var(--text) !important;
+    background-color: var(--button-bg) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：純紅色配色模式 - 對話框圖標容器 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-icon {
+    color: var(--text) !important;
+    background-color: var(--button-bg) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黑白色模式 - 對話框圖標容器 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-icon {
+    color: var(--text) !important;
+    background-color: var(--button-bg) !important;
+    border-color: var(--text) !important;
+}
+
+/* ====== 對話框關閉按鈕顏色介入 ====== */
+
+/* 橙色模式 - 對話框關閉按鈕 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-closer {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 橙色模式 - 對話框關閉按鈕懸停 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-closer:hover {
+    background: rgba(255, 153, 0, 0.2) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黃綠色模式 - 對話框關閉按鈕 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-closer {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黃綠色模式 - 對話框關閉按鈕懸停 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-closer:hover {
+    background: rgba(204, 255, 0, 0.2) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：藍綠配色模式 - 對話框關閉按鈕 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-closer {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：藍綠配色模式 - 對話框關閉按鈕懸停 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-closer:hover {
+    background: rgba(0, 230, 255, 0.2) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：純紅色配色模式 - 對話框關閉按鈕 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-closer {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 新增：純紅色配色模式 - 對話框關閉按鈕懸停 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-closer:hover {
+    background: rgba(255, 0, 0, 0.2) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黑白色模式 - 對話框關閉按鈕 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-closer {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 黑白色模式 - 對話框關閉按鈕懸停 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-closer:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* ====== 對話框圖標顏色介入 ====== */
+
+/* 橙色模式 - 對話框圖標 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-icon .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 黃綠色模式 - 對話框圖標 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-icon .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 新增：藍綠配色模式 - 對話框圖標 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-icon .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 新增：純紅色配色模式 - 對話框圖標 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-icon .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 黑白色模式 - 對話框圖標 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-icon .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* ====== 對話框圖標懸停效果 ====== */
+
+/* 橙色模式 - 對話框圖標懸停 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-icon:hover .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 黃綠色模式 - 對話框圖標懸停 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-icon:hover .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 新增：藍綠配色模式 - 對話框圖標懸停 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-icon:hover .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 新增：純紅色配色模式 - 對話框圖標懸停 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-icon:hover .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* 黑白色模式 - 對話框圖標懸停 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-icon:hover .icon {
+    color: var(--text) !important;
+    fill: var(--text) !important;
+    stroke: var(--text) !important;
+}
+
+/* ====== 對話框其他相關元素 ====== */
+
+/* 對話框標題欄背景 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-titlebar {
+    background: var(--button-bg) !important;
+    border-bottom-color: var(--text) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-titlebar {
+    background: var(--button-bg) !important;
+    border-bottom-color: var(--text) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-titlebar {
+    background: var(--button-bg) !important;
+    border-bottom-color: var(--text) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-titlebar {
+    background: var(--button-bg) !important;
+    border-bottom-color: var(--text) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-titlebar {
+    background: var(--button-bg) !important;
+    border-bottom-color: var(--text) !important;
+    color: var(--text) !important;
+}
+
+/* 對話框內容區域 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-content {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-content {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-content {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-content {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-content {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+}
+
+/* 對話框按鈕 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-button {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="orange"] .theme-dark .dialog-button:hover {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-button {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark .dialog-button:hover {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-button {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-dark .dialog-button:hover {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-button {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-dark .dialog-button:hover {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-button {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+:root[data-orange-filter][data-color-filter="black-white"] .theme-dark .dialog-button:hover {
+    background: var(--button-bg) !important;
+    color: var(--text) !important;
+    border-color: var(--text) !important;
+}
+
+/* 確保濾鏡開啟時強制應用黑暗主題顏色 */
+:root[data-orange-filter] .theme-dark {
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+/* 修正一些特定元素的顏色 */
+:root[data-orange-filter] .theme-dark a {
+    color: var(--link) !important;
+}
+
+:root[data-orange-filter] .theme-dark button:hover {
+    background-color: var(--button-bg-hover) !important;
+}
+
+:root[data-orange-filter] .theme-dark .dialog,
+:root[data-orange-filter] .theme-dark .menu,
+:root[data-orange-filter] .theme-dark .popup {
+    background-color: var(--bg) !important;
+    color: var(--text) !important;
+    border-color: var(--focus-color) !important;
+}
+
+/* 確保文字顏色在各種元素上正確應用 */
+:root[data-orange-filter] .theme-dark h1,
+:root[data-orange-filter] .theme-dark h2,
+:root[data-orange-filter] .theme-dark h3,
+:root[data-orange-filter] .theme-dark h4,
+:root[data-orange-filter] .theme-dark h5,
+:root[data-orange-filter] .theme-dark h6,
+:root[data-orange-filter] .theme-dark p,
+:root[data-orange-filter] .theme-dark span,
+:root[data-orange-filter] .theme-dark div,
+:root[data-orange-filter] .theme-dark li {
+    color: var(--text) !important;
+}
+
+/* 過渡效果 */
+:root[data-orange-filter] .theme-dark .dialog-icon,
+:root[data-orange-filter] .theme-dark .dialog-closer,
+:root[data-orange-filter] .theme-dark .dialog-button,
+:root[data-orange-filter] .theme-dark .dialog-icon .icon {
+    transition: all 0.3s ease !important;
+}
