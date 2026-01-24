@@ -1,0 +1,98 @@
+; Copyright   Microsoft Corp.
+
+[Theme]
+; High Contrast Black - IDS_THEME_DISPLAYNAME_HCBLACK
+DisplayName=@%SystemRoot%\System32\themeui.dll,-2103
+SetLogonBackground=0
+
+; Computer - SHIDI_SERVER
+[CLSID\{20D04FE0-3AEA-1069-A2D8-08002B30309D}\DefaultIcon]
+DefaultValue=%SystemRoot%\System32\imageres.dll,-109
+
+; UsersFiles - SHIDI_USERFILES
+[CLSID\{59031A47-3F72-44A7-89C5-5595FE6B30EE}\DefaultIcon]
+DefaultValue=%SystemRoot%\System32\imageres.dll,-123
+
+; Network - SHIDI_MYNETWORK
+[CLSID\{F02C1A0D-BE21-4350-88B0-7367FC96EF3C}\DefaultIcon]
+DefaultValue=%SystemRoot%\System32\imageres.dll,-25
+
+; Recycle Bin - SHIDI_RECYCLERFULL SHIDI_RECYCLER
+[CLSID\{645FF040-5081-101B-9F08-00AA002F954E}\DefaultIcon]
+Full=%SystemRoot%\System32\imageres.dll,-54
+Empty=%SystemRoot%\System32\imageres.dll,-55
+
+[Control Panel\Colors]
+ActiveTitle=89 0 32
+Background=8 0 3
+ButtonFace=18 0 9
+ButtonText=204 0 51
+GrayText=43 0 11
+Hilight=99 0 33
+HilightText=204 0 51
+HotTrackingColor=204 0 51
+InactiveTitle=20 0 4
+InactiveTitleText=204 0 51
+TitleText=204 0 51
+Window=8 0 3
+WindowText=204 0 51
+Scrollbar=15 0 7
+Menu=15 0 7
+WindowFrame=204 0 51
+MenuText=199 0 78
+ActiveBorder=204 0 51
+InactiveBorder=20 0 4
+AppWorkspace=15 0 7
+ButtonShadow=15 0 7
+ButtonHilight=89 0 32
+ButtonDkShadow=15 0 7
+ButtonLight=23 0 14
+InfoText=199 0 78
+InfoWindow=15 0 7
+ButtonAlternateFace=89 0 32
+GradientActiveTitle=89 0 32
+GradientInactiveTitle=20 0 4
+MenuHilight=99 0 33
+MenuBar=15 0 7
+
+[Control Panel\Cursors]
+Arrow=%SystemRoot%\cursors\arrow_i.cur
+Help=%SystemRoot%\cursors\help_i.cur
+AppStarting=%SystemRoot%\cursors\wait_i.cur
+Wait=%SystemRoot%\cursors\busy_i.cur
+NWPen=%SystemRoot%\cursors\pen_i.cur
+No=%SystemRoot%\cursors\no_i.cur
+SizeNS=%SystemRoot%\cursors\size4_i.cur
+SizeWE=%SystemRoot%\cursors\size3_i.cur
+Crosshair=
+IBeam=
+SizeNWSE=%SystemRoot%\cursors\size2_i.cur
+SizeNESW=%SystemRoot%\cursors\size1_i.cur
+SizeAll=%SystemRoot%\cursors\move_i.cur
+UpArrow=%SystemRoot%\cursors\up_i.cur
+DefaultValue=Windows Default
+DefaultValue.MUI=@main.cpl,-1020
+Hand=%SystemRoot%\cursors\aero_link_i.cur
+Link=
+
+[Control Panel\Desktop]
+Wallpaper=
+TileWallpaper=0
+WallpaperStyle=10
+Pattern=
+
+[VisualStyles]
+Path=%SystemRoot%\resources\themes\Aero\AeroLite.msstyles
+ColorStyle=NormalColor
+Size=NormalSize
+HighContrast=3
+
+[boot]
+SCRNSAVE.EXE=
+
+[MasterThemeSelector]
+MTSM=RJSPBS
+
+[Sounds]
+; IDS_SCHEME_DEFAULT
+SchemeName=@%SystemRoot%\System32\mmres.dll,-800
