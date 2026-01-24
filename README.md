@@ -6,12 +6,14 @@ This plugin will unify the entire interface—including all elements like image 
 
 https://github.com/user-attachments/assets/54c8f911-7d02-488b-bfb1-55c42b89459d
 
-may additonal need：
+The .theme file is a high-contrast style file designed for the Windows 10 and 11 systems. It works best when paired with complementary elements for optimal use.
+
+may additonal plugin need：
 https://github.com/hugo529100/hfs-Orange-theme
 https://github.com/hugo529100/hfs-MVfiles-covers
 https://github.com/hugo529100/hfs-Musicplayer
 https://github.com/hugo529100/hfs-Banner-footer-plugin
-
+https://github.com/hugo529100/hfs-Frontend-toggles
 
 
 
