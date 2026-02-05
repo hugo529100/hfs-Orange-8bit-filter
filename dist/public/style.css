@@ -1,18 +1,3 @@
-/* 圖片顏色濾鏡 - 僅在有 data-orange-filter 屬性時生效 
-:root[data-orange-filter] img,
-:root[data-orange-filter] .file-show img,
-:root[data-orange-filter] .entry-icon img,
-:root[data-orange-filter] video poster {
-    filter: url(#orange8bit);
-    image-rendering: pixelated;
-} */
-
-/* 視頻濾鏡 
-:root[data-orange-filter] video {
-    filter: url(#orange8bit);
-    image-rendering: pixelated;
-}*/
-
 /* 圖片顏色濾鏡 - 僅在有 data-orange-filter 屬性時生效 */
 :root[data-orange-filter] img,
 :root[data-orange-filter] .file-show img,
@@ -235,7 +220,112 @@
     transition: filter 0.5s ease;
 }
 
-/* 以下黑暗模式介入部分保持不變 */
+/* 橙色模式 - 白色主題介入 */
+:root[data-orange-filter][data-color-filter="orange"] .theme-light,
+:root[data-orange-filter][data-color-filter="orange"] .theme-light * {
+--bg: #ffb100;
+    --text: #693f00;
+    --background: #ffb100ba;
+    --background-color: #ffb100;
+    --ghost-contrast: rgb(0 0 0 / 6%);
+    --faint-contrast: #00000060;
+    --faint-contrast-trans: #00000063;
+    --mild-contrast: rgb(0 0 0 / 27%);
+    --comment-contrast: rgb(0 0 0 / 85%);
+    --good-contrast: rgb(0 0 0 / 69%);
+    --grid-contrast: rgb(0 0 0 / 17%);
+    --button-bg: #ffb100e8;
+    --button-text: #000000cc;
+    --focus-color: #000000c2;
+    --success: #ffb100d8;
+    --deepprevew: #ffb100;
+}
+
+
+/* 黃綠色模式 - 白色主題介入 */
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-light,
+:root[data-orange-filter][data-color-filter="yellow-green"] .theme-light * {
+    --bg: #b0b202;
+    --text: #4d5800;
+    --background: #b0b202ba;
+    --background-color: #b0b202;
+    --ghost-contrast: rgb(0 0 0 / 6%);
+    --faint-contrast: #00000060;
+    --faint-contrast-trans: #00000063;
+    --mild-contrast: rgb(0 0 0 / 27%);
+    --comment-contrast: rgb(0 0 0 / 85%);
+    --good-contrast: rgb(0 0 0 / 69%);
+    --grid-contrast: rgb(0 0 0 / 17%);
+    --button-bg: #b0b202e8;
+    --button-text: #000000cc;
+    --focus-color: #000000c2;
+    --success: #b0b202d8;
+    --deepprevew: #b0b202;
+}
+
+/* 藍綠配色模式 - 白色主題介入 */
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-light,
+:root[data-orange-filter][data-color-filter="blue-green"] .theme-light * {
+    --bg: #00ffbf;
+    --text: #006545;
+    --background: #00c4a0ba;
+    --background-color: #00ffbf;
+    --ghost-contrast: rgb(0 0 0 / 6%);
+    --faint-contrast: #00000060;
+    --faint-contrast-trans: #00000063;
+    --mild-contrast: rgb(0 0 0 / 27%);
+    --comment-contrast: rgb(0 0 0 / 85%);
+    --good-contrast: rgb(0 0 0 / 69%);
+    --grid-contrast: rgb(0 0 0 / 17%);
+    --button-bg: #00ffbfe8;
+    --button-text: #000000cc;
+    --focus-color: #000000c2;
+    --success: #00ffbfd8;
+    --deepprevew: #00ffbf;
+}
+
+/* 純紅色配色模式 - 白色主題介入 */
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-light,
+:root[data-orange-filter][data-color-filter="pure-red"] .theme-light * {
+    --bg: #ff1502;
+    --text: #690000;
+    --background: #ff0000ba;
+    --background-color: #ff1502;
+    --ghost-contrast: rgb(0 0 0 / 6%);
+    --faint-contrast: #00000060;
+    --faint-contrast-trans: #00000063;
+    --mild-contrast: rgb(0 0 0 / 27%);
+    --comment-contrast: rgb(0 0 0 / 85%);
+    --good-contrast: rgb(0 0 0 / 69%);
+    --grid-contrast: rgb(0 0 0 / 17%);
+    --button-bg: #ff1502e8;
+    --button-text: #000000cc;
+    --focus-color: #000000c2;
+    --success: #ff1502d8;
+    --deepprevew: #ff1502;
+}
+
+/* 黑白色模式 - 白色主題介入 */
+:root[data-orange-filter][data-color-filter="black-white"] .theme-light,
+:root[data-orange-filter][data-color-filter="black-white"] .theme-light * {
+    --bg: #ffffff;
+    --text: #000000;
+    --background: #ffffffba;
+    --background-color: #ffffff;
+    --ghost-contrast: rgb(0 0 0 / 6%);
+    --faint-contrast: #00000060;
+    --faint-contrast-trans: #00000063;
+    --mild-contrast: rgb(0 0 0 / 27%);
+    --comment-contrast: rgb(0 0 0 / 85%);
+    --good-contrast: rgb(0 0 0 / 69%);
+    --grid-contrast: rgb(0 0 0 / 17%);
+    --button-bg: #ffffffe8;
+    --button-text: #000000cc;
+    --focus-color: #000000c2;
+    --success: #ffffffd8;
+    --deepprevew: #dbdbdb;
+}
+
 /* ====== 強行介入黑暗模式顏色設置 ====== */
 
 /* 橙色模式 - 黑暗主題介入 */
@@ -244,7 +334,7 @@
     --bg: rgba(8, 5, 0, 0.74);
     --text: #ff9900;
     --good-contrast: #ff9900be;
-    --button-bg-hover: #16141198;
+    --button-bg-hover: #ff99002b;
     --button-text: #ff9900;
     --button-bg: #16141100;
     color-scheme: dark;
@@ -265,22 +355,22 @@
 :root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark,
 :root[data-orange-filter][data-color-filter="yellow-green"] .theme-dark * {
     --bg: rgba(10, 12, 0, 0.74);
-    --text: #b9ce00;
-    --good-contrast: #b9ce00be;
-    --button-bg-hover: #18191198;
-    --button-text: #b9ce00;
+    --text: #b6ce00;
+    --good-contrast: #b6ce00be;
+    --button-bg-hover: #b9ce002b;
+    --button-text: #b6ce00;
     --button-bg: #18191100;
     color-scheme: dark;
-    --ghost-contrast: #b9ce002b;
-    --faint-contrast: #b9ce007b;
-    --mild-contrast: #b9ce007d;
-    --comment-contrast: #b9ce007a;
-    --grid-contrast: #b9ce0055;
-    --focus-color: #b9ce00b8;
-    --text-high-contrast: #b9ce00;
+    --ghost-contrast: #b6ce002b;
+    --faint-contrast: #b6ce007b;
+    --mild-contrast: #b6ce007d;
+    --comment-contrast: #b6ce007a;
+    --grid-contrast: #b6ce0055;
+    --focus-color: #b6ce00b8;
+    --text-high-contrast: #b6ce00;
     --success: #0b0c09ab;
     --warning: #43470bab;
-    --link: #b9ce00;
+    --link: #b6ce00;
     --deepprevew: #000000f6;
 }
 
@@ -288,22 +378,22 @@
 :root[data-orange-filter][data-color-filter="blue-green"] .theme-dark,
 :root[data-orange-filter][data-color-filter="blue-green"] .theme-dark * {
     --bg: rgba(0, 5, 8, 0.74);
-    --text: #00eabb;
-    --good-contrast: #00eabbbe;
-    --button-bg-hover: #11161898;
-    --button-text: #00eabb;
+    --text: #00eaa0;
+    --good-contrast: #00eaa0be;
+    --button-bg-hover: #00eaa02b;
+    --button-text: #00eaa0;
     --button-bg: #11161800;
     color-scheme: dark;
-    --ghost-contrast: #00eabb2b;
-    --faint-contrast: #00eabb7b;
-    --mild-contrast: #00eabb7d;
-    --comment-contrast: #00eabb7a;
-    --grid-contrast: #00eabb55;
-    --focus-color: #00eabbb8;
-    --text-high-contrast: #00eabb;
+    --ghost-contrast: #00eaa02b;
+    --faint-contrast: #00eaa07b;
+    --mild-contrast: #00eaa07d;
+    --comment-contrast: #00eaa07a;
+    --grid-contrast: #00eaa055;
+    --focus-color: #00eaa0b8;
+    --text-high-contrast: #00eaa0;
     --success: #090b0cab;
     --warning: #0a2b43ab;
-    --link: #00eabb;
+    --link: #00eaa0;
     --deepprevew: #000000f6;
 }
 
@@ -313,7 +403,7 @@
     --bg: rgba(8, 0, 0, 0.74);
     --text: #ff0000;
     --good-contrast: #ff0000be;
-    --button-bg-hover: #16111198;
+    --button-bg-hover: #ff00002b;
     --button-text: #ff0000;
     --button-bg: #16111100;
     color-scheme: dark;
@@ -336,7 +426,7 @@
     --bg: rgba(0, 0, 0, 0.74);
     --text: #ffffff;
     --good-contrast: #ffffffbe;
-    --button-bg-hover: #2a2a2a98;
+    --button-bg-hover: #ffffff2b;
     --button-text: #ffffff;
     --button-bg: #2a2a2a00;
     color-scheme: dark;
@@ -351,6 +441,29 @@
     --warning: #2a2a2aab;
     --link: #ffffff;
     --deepprevew: #000000f6;
+}
+
+/* ====== 干涉範圍控制 ====== */
+
+/* 範圍1：僅界面顏色干涉 */
+:root[data-filter-scope="1"] img,
+:root[data-filter-scope="1"] .file-show img,
+:root[data-filter-scope="1"] .entry-icon img,
+:root[data-filter-scope="1"] video {
+    filter: none !important;
+    image-rendering: auto !important;
+}
+
+/* 範圍2：界面+圖片顏色干涉 (默認) */
+:root[data-filter-scope="2"] video {
+    filter: none !important;
+    image-rendering: auto !important;
+}
+
+/* 範圍3：全範圍包括視頻 */
+:root[data-filter-scope="3"] video {
+    filter: url(#orange8bit) !important;
+    image-rendering: pixelated !important;
 }
 
 /* ====== 對話框圖標容器顏色介入 ====== */
@@ -663,12 +776,26 @@
 
 /* 修正一些特定元素的顏色 */
 :root[data-orange-filter] .theme-dark a {
-    color: var(--link) !important;
+    color: var(--text) !important;
 }
-
+/* 統一按鈕划過的背景的顏色 */
 :root[data-orange-filter] .theme-dark button:hover {
     background-color: var(--button-bg-hover) !important;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
+
+/* 觸摸設備的特殊處理 */
+@media (hover: none) and (pointer: coarse) {
+    :root[data-orange-filter] .theme-dark button:active {
+        background-color: var(--button-bg-hover) !important;
+        transition: background-color 0.1s ease !important;
+    }
+    
+    :root[data-orange-filter] .theme-dark button:not(:active) {
+        background-color: var(--button-bg) !important;
+    }
+}
+
 
 :root[data-orange-filter] .theme-dark .dialog,
 :root[data-orange-filter] .theme-dark .menu,

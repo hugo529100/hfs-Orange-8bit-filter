@@ -5,16 +5,16 @@
     const FILTER_SELECT_ID = 'orange-filter-select';
     const EFFECT_SELECT_ID = 'orange-effect-select';
     const COLOR_SELECT_ID = 'orange-color-select';
+    const SCOPE_SELECT_ID = 'orange-scope-select';
     
     const LEVELS = {
         0: [], // Off
-        4:  [0.08, .33, .66, .92], // 4-bit
+        4:  [0.08, .33, .66, .92],
         8:  [0.06, .14, .28, .42, .56, .7, .85, .92],
         12: [0.06, .09, .18, .27, .36, .45, .55, .65, .75, .85, .90, .92],
         16: Array.from({length: 16}, (_, i) => +(i/15).toFixed(3))
     }
 
-    // Color configurations
     const COLORS = {
         'orange': { 
             r: 1.30, g: 1.00, b: 0.00,
@@ -35,20 +35,18 @@
         'black-white': { 
             r: 1.0, g: 1.0, b: 1.0,
             rBase: 1.0, gRatio: 1.0, bRatio: 1.0
-        }      
+        }
     };
 
-    // Pixelation configurations
     const PIXELATION_CONFIGS = {
         0: { size: 1, name: 'None' },
         1: { size: 4, name: 'CRT Scanlines' },
         2: { size: 8, name: '45° Diagonal Grid' },
         3: { size: 12, name: 'Square Dot Grid' },
         4: { size: 16, name: 'Pixelation (Block)' },
-        5: { size: 12, name: 'Pixel+45° Grid' }  // 橫向像素 + 45°網格
+        5: { size: 12, name: 'Pixel+45° Grid' }
     };
 
-    // Check if localStorage is supported
     const isLocalStorageSupported = () => {
         try {
             localStorage.setItem('test', '1');
@@ -59,71 +57,67 @@
         }
     };
 
-    // Get stored configuration
     const getStoredConfig = () => {
         const defaultConfig = {
-            level: 0,     // 0=off, 4, 8, 12, 16
-            effect: 0,    // 0=off, 1=scanlines, 2=45° grid, 3=dot grid, 4=pixelation, 5=pixel+45° grid
-            color: 'orange' // default orange
+            level: 4,
+            effect: 0,
+            color: 'orange',
+            scope: 1
         };
         
         if (!isLocalStorageSupported()) return defaultConfig;
         
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
-            return stored ? JSON.parse(stored) : defaultConfig;
+            if (stored) {
+                const parsed = JSON.parse(stored);
+                // 確保舊配置兼容新格式
+                if (parsed.scope === undefined) {
+                    parsed.scope = parsed.level === 0 ? 0 : 1;
+                }
+                return parsed;
+            }
+            return defaultConfig;
         } catch (e) {
             return defaultConfig;
         }
     };
 
-    // Save configuration
     const saveConfig = (config) => {
         if (isLocalStorageSupported()) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
         }
     };
 
-    // Build SVG filter with pixelation effect
     function buildFilter(levels, effect, color) {
-        if (levels === 0) return ''; // Turn off filter
+        if (levels === 0) return '';
         
         let l = LEVELS[levels];
         const colorConfig = COLORS[color] || COLORS.orange;
         
-        // Calculate G and B channel values based on selected color
         let g, b;
         
         if (color === 'black-white') {
-            // Black & White: all channels use same grayscale values
             g = l.map(v => +v.toFixed(3));
             b = l.map(v => +v.toFixed(3));
         } else {
-            // Other colors: use corrected ratios
             g = l.map(v => +(v * colorConfig.gRatio).toFixed(3));
             b = l.map(v => +(v * colorConfig.bRatio).toFixed(3));
-            
-            // Adjust R channel
             l = l.map(v => +(v * colorConfig.rBase).toFixed(3));
         }
         
-        // Add pixelation effect if selected (effect 4 or 5)
         let pixelationEffect = '';
         let inputSource = 'SourceGraphic';
         
         if (effect === 4) {
-            // 原有的塊狀像素化
             pixelationEffect = `
-                <!-- Pixelation effect (Block style) -->
                 <feMorphology operator="erode" radius="${PIXELATION_CONFIGS[4].size/20}" in="SourceGraphic" result="eroded"/>
                 <feMorphology operator="dilate" radius="${PIXELATION_CONFIGS[4].size/20}" in="eroded" result="pixelated"/>
             `;
             inputSource = 'pixelated';
         } else if (effect === 5) {
-            // 新的橫向像素化效果
             const pixelSize = PIXELATION_CONFIGS[5].size;
             pixelationEffect = `
-                <!-- Horizontal Pixelation effect -->
                 <feMorphology operator="erode" radius="${pixelSize/18}" in="SourceGraphic" result="eroded"/>
                 <feMorphology operator="dilate" radius="${pixelSize/18}" in="eroded" result="pixelated"/>
             `;
@@ -133,19 +127,12 @@
         return `
         <filter id="orange8bit" color-interpolation-filters="sRGB">
             ${pixelationEffect}
-            
-            <!-- 1 Remove color but keep original brightness -->
             <feColorMatrix type="saturate" values="0" in="${inputSource}" result="mono"/>
-            
-            <!-- 3 Quantize to selected color tones -->
             <feComponentTransfer in="mono">
-                <!-- Keep original brightness, only change color distribution -->
                 <feFuncR type="discrete" tableValues="${l.join(' ')}"/>
                 <feFuncG type="discrete" tableValues="${g.join(' ')}"/>
                 <feFuncB type="discrete" tableValues="${b.join(' ')}"/>
             </feComponentTransfer>
-
-            <!-- 4 Apply color gain -->
             <feColorMatrix type="matrix" values="
                 ${colorConfig.r.toFixed(2)} 0    0    0 0
                 0    ${colorConfig.g.toFixed(2)} 0    0 0
@@ -155,7 +142,6 @@
         </filter>`;
     }
 
-    // Create SVG container
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.id = 'orange-filter-svg';
     svg.style.position = 'absolute';
@@ -163,32 +149,38 @@
     svg.style.pointerEvents = 'none';
     document.body.appendChild(svg);
 
-    // Apply configuration
-    function applyConfig(config) {
-        // Update SVG filter
-        if (config.level === 0) {
+    let currentConfig = getStoredConfig();
+
+    function applyConfig(config, updateUI = true) {
+        // 保存當前配置
+        currentConfig = {...config};
+        
+        // 如果 scope 為 0，關閉所有效果
+        if (config.scope === 0) {
             svg.innerHTML = '';
             document.documentElement.removeAttribute('data-orange-filter');
             document.documentElement.removeAttribute('data-scanlines-effect');
             document.documentElement.removeAttribute('data-grid-effect');
             document.documentElement.removeAttribute('data-dotgrid-effect');
             document.documentElement.removeAttribute('data-pixelation-effect');
-            document.documentElement.removeAttribute('data-pixel-diag-grid-effect'); // 新增属性
+            document.documentElement.removeAttribute('data-pixel-diag-grid-effect');
             document.documentElement.removeAttribute('data-color-filter');
+            document.documentElement.removeAttribute('data-filter-scope');
         } else {
-            // Always apply color filter (if level is not 0)
+            // 只有在 scope 不為 0 時才應用 filter
             svg.innerHTML = buildFilter(config.level, config.effect, config.color);
             document.documentElement.setAttribute('data-orange-filter', 'true');
             document.documentElement.setAttribute('data-color-filter', config.color);
+            document.documentElement.setAttribute('data-filter-scope', config.scope.toString());
             
-            // Clear all effect attributes
+            // 清除所有效果屬性
             document.documentElement.removeAttribute('data-scanlines-effect');
             document.documentElement.removeAttribute('data-grid-effect');
             document.documentElement.removeAttribute('data-dotgrid-effect');
             document.documentElement.removeAttribute('data-pixelation-effect');
             document.documentElement.removeAttribute('data-pixel-diag-grid-effect');
             
-            // Set the selected effect
+            // 設置選擇的效果
             if (config.effect === 1) {
                 document.documentElement.setAttribute('data-scanlines-effect', 'true');
             } else if (config.effect === 2) {
@@ -198,15 +190,47 @@
             } else if (config.effect === 4) {
                 document.documentElement.setAttribute('data-pixelation-effect', 'true');
             } else if (config.effect === 5) {
-                document.documentElement.setAttribute('data-pixel-diag-grid-effect', 'true'); // 新效果
+                document.documentElement.setAttribute('data-pixel-diag-grid-effect', 'true');
             }
         }
         
-        // Save configuration
         saveConfig(config);
+        
+        // 如果需要，更新UI
+        if (updateUI) {
+            updateUIFromConfig(config);
+        }
     }
 
-    // Insert controls in Options dialog (English interface)
+    function updateUIFromConfig(config) {
+        const filterSelect = document.getElementById(FILTER_SELECT_ID);
+        const colorSelect = document.getElementById(COLOR_SELECT_ID);
+        const effectSelect = document.getElementById(EFFECT_SELECT_ID);
+        const scopeSelect = document.getElementById(SCOPE_SELECT_ID);
+        
+        if (filterSelect && colorSelect && effectSelect && scopeSelect) {
+            // 先設置所有值
+            scopeSelect.value = config.scope.toString();
+            colorSelect.value = config.color;
+            
+            // 根據 scope 設置其他控件
+            if (config.scope === 0) {
+                // Filter Off 時，禁用其他控件
+                filterSelect.disabled = true;
+                effectSelect.disabled = true;
+                // 但仍然顯示存儲的值
+                filterSelect.value = config.level.toString();
+                effectSelect.value = config.effect.toString();
+            } else {
+                // Filter On 時，啟用其他控件
+                filterSelect.disabled = false;
+                effectSelect.disabled = false;
+                filterSelect.value = config.level.toString();
+                effectSelect.value = config.effect.toString();
+            }
+        }
+    }
+
     function insertControls() {
         const optionsDialog = document.querySelector('.dialog[aria-modal="true"]');
         if (!optionsDialog || document.getElementById(FILTER_SELECT_ID)) return;
@@ -214,19 +238,14 @@
         const themeSelect = document.getElementById('option-theme');
         if (!themeSelect) return;
 
-        // Get current configuration
-        const config = getStoredConfig();
-
-        // Create controls HTML (English)
         const controlsHTML = `
             <div style="margin-bottom: 0.8em;">
-                <label style="display: block; margin-bottom: 0.2em; font-weight: 500;">Color Levels:</label>
-                <select id="${FILTER_SELECT_ID}" style="width: 100%; padding: 0.4em;">
-                    <option value="0">Filter Off</option>
-                    <option value="4">4 levels (Minimal)</option>
-                    <option value="8">8 levels (Retro)</option>
-                    <option value="12">12 levels (Industrial)</option>
-                    <option value="16">16 levels (Smoother)</option>
+                <label style="display: block; margin-bottom: 0.2em; font-weight: 500;">Filter Scope:</label>
+                <select id="${SCOPE_SELECT_ID}" style="width: 100%; padding: 0.4em;">
+                    <option value="0">Filter Off (All Effects)</option>
+                    <option value="1">Interface Colors Only</option>
+                    <option value="2">Interface + Images</option>
+                    <option value="3">Full Range (Including Videos)</option>
                 </select>
             </div>
             <div style="margin-bottom: 0.8em;">
@@ -237,6 +256,15 @@
                     <option value="blue-green">Bioluminescent Cyan</option>
                     <option value="pure-red">Night Vision Red</option>
                     <option value="black-white">B & W</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 0.8em;">
+                <label style="display: block; margin-bottom: 0.2em; font-weight: 500;">Color Levels:</label>
+                <select id="${FILTER_SELECT_ID}" style="width: 100%; padding: 0.4em;">
+                    <option value="4">4 levels (Minimal)</option>
+                    <option value="8">8 levels (Retro)</option>
+                    <option value="12">12 levels (Industrial)</option>
+                    <option value="16">16 levels (Smoother)</option>
                 </select>
             </div>
             <div style="margin-bottom: 0.8em;">
@@ -252,44 +280,84 @@
             </div>
         `;
 
-        // Insert after theme selector
         themeSelect.insertAdjacentHTML('afterend', controlsHTML);
 
-        // Set initial values
         const filterSelect = document.getElementById(FILTER_SELECT_ID);
         const colorSelect = document.getElementById(COLOR_SELECT_ID);
         const effectSelect = document.getElementById(EFFECT_SELECT_ID);
-        
-        filterSelect.value = config.level.toString();
-        colorSelect.value = config.color;
-        effectSelect.value = config.effect.toString();
+        const scopeSelect = document.getElementById(SCOPE_SELECT_ID);
 
-        // Add event listeners
-        filterSelect.addEventListener('change', function() {
-            const newConfig = getStoredConfig();
-            newConfig.level = parseInt(this.value);
-            applyConfig(newConfig);
+        // 初始設置UI狀態 - 使用currentConfig而不是重新讀取
+        updateUIFromConfig(currentConfig);
+
+        // 事件監聽器 - 使用正確的邏輯
+        scopeSelect.addEventListener('change', function() {
+            const scopeValue = parseInt(this.value);
+            
+            // 更新當前配置
+            currentConfig.scope = scopeValue;
+            
+            if (scopeValue === 0) {
+                // Filter Off: 禁用其他控件，但保持內部配置值
+                filterSelect.disabled = true;
+                effectSelect.disabled = true;
+                // 注意：這裡不修改level和effect的值，只保存當前的
+            } else {
+                // Filter On: 啟用其他控件
+                filterSelect.disabled = false;
+                effectSelect.disabled = false;
+                
+                // 如果之前是Filter Off狀態，使用默認值
+                if (currentConfig.level === 0) {
+                    currentConfig.level = 4;
+                    filterSelect.value = "4";
+                }
+                if (currentConfig.effect === undefined) {
+                    currentConfig.effect = 0;
+                    effectSelect.value = "0";
+                }
+            }
+            
+            // 應用配置（不更新UI，避免循環）
+            applyConfig(currentConfig, false);
         });
 
         colorSelect.addEventListener('change', function() {
-            const newConfig = getStoredConfig();
-            newConfig.color = this.value;
-            applyConfig(newConfig);
+            currentConfig.color = this.value;
+            if (currentConfig.scope !== 0) {
+                applyConfig(currentConfig, false);
+            }
+        });
+
+        filterSelect.addEventListener('change', function() {
+            if (!filterSelect.disabled) {
+                currentConfig.level = parseInt(this.value);
+                if (currentConfig.scope !== 0) {
+                    applyConfig(currentConfig, false);
+                }
+            }
         });
 
         effectSelect.addEventListener('change', function() {
-            const newConfig = getStoredConfig();
-            newConfig.effect = parseInt(this.value);
-            applyConfig(newConfig);
+            if (!effectSelect.disabled) {
+                currentConfig.effect = parseInt(this.value);
+                if (currentConfig.scope !== 0) {
+                    applyConfig(currentConfig, false);
+                }
+            }
         });
     }
 
-    // Initialize
     function init() {
-        // Observe for Options dialog appearance
+        // 立即應用初始配置
+        applyConfig(currentConfig, false);
+        
+        // 觀察Options對話框
         const observer = new MutationObserver(() => {
             if (document.querySelector('.dialog-title')?.textContent.includes('Options')) {
-                setTimeout(insertControls, 100); // Delay to ensure DOM is ready
+                setTimeout(() => {
+                    insertControls();
+                }, 100);
             }
         });
 
@@ -297,12 +365,8 @@
             childList: true,
             subtree: true
         });
-
-        // Apply initial configuration
-        applyConfig(getStoredConfig());
     }
 
-    // Ensure DOM is loaded
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

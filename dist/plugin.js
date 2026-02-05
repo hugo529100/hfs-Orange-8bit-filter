@@ -1,4 +1,4 @@
-exports.version = 1.3
+exports.version = 1.5
 exports.apiRequired = 8.0
 exports.description = "Apply retro filters with various effects to all frontend images"
 exports.repo = "Hug3O/Orange-8bit-filter"
